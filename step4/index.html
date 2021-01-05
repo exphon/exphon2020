@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+	<meta charset="utf-8">
+	<title> My Experiment </title>
+	<script src = "https://tyoon.net/webexp/jspsych/jspsych.js"></script>
+	<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-html-button-response.js"></script>
+	<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+	<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-instructions.js"></script>
+	<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+	<script src="https://tyoon.net/webexp/jspsych/plugins/jspsych-audio-keyboard-response.js"></script>
+	<script src="https://tyoon.net/webexp/jspsych/plugins/jspsych-audio-button-response.js"></script>
+	<link href = "https://tyoon.net/webexp/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+</head>
+
+<body></body>
+<script>
+
+// media preloading
+	var audio = [
+		'sounds/aba1.wav',
+		'sounds/aba2.wav',
+		'sounds/ava1.wav',
+		'sounds/ava2.wav'
+	];
+
+	// Welcome
+	var welcome_block = {
+		data: {
+			screen_id: "welcome"
+		},
+		type: "html-button-response",
+		stimulus: "Welcome to the experiment",
+		choices: ["Click here to continue"],
+	};
+
+	// Instructions
+	var instruction_block = {
+		data: {
+			screen_id: "instructions"
+		},
+		type: "instructions",
+		pages: [
+			"<p>소리를 잘 듣고 알맞은 곳을 눌러 주기 바랍니다. </p>",
+			"이제 시작하겠습니다."
+			],
+		show_clickable_nav: true,
+	};
+
+
+	var ax_stimuli = [
+			{ stimulus: 'sounds/aba1.wav', data: { answer: 'aba', correct_response: '0' } },
+			{ stimulus: 'sounds/aba2.wav', data: { answer: 'aba', correct_response: '0' } },
+			{ stimulus: 'sounds/ava1.wav', data: { answer: 'ava', correct_response: '1' } },
+			{ stimulus: 'sounds/ava1.wav', data: { answer: 'ava', correct_response: '1' } }
+
+	];
+
+	var ax_button_trials = {
+			type: 'audio-button-response',
+			stimulus: jsPsych.timelineVariable('stimulus'),
+			data: jsPsych.timelineVariable('data'),
+			choices: ['aba', 'ava'],
+			trial_duration: 6000,
+			on_finish: function (data) {
+					if ((data.button_pressed == 0) && (data.answer == 'aba')) {
+							jsPsych.data.addDataToLastTrial({ correct: true });
+					} else if ((data.button_pressed == 1) && (data.answer == 'ava')) {
+							jsPsych.data.addDataToLastTrial({ correct: true });
+					} else if (data.button_pressed == -1) {
+							jsPsych.data.addDataToLastTrial({ correct: 'timeout' });
+					} else {
+							jsPsych.data.addDataToLastTrial({ correct: false });
+					}
+			}
+	}
+
+	var feedback = {
+		type: 'html-keyboard-response',
+		stimulus: function(){
+			var feedback_text = 'Incorrect';
+			var last_trial_accuracy = jsPsych.data.getLastTrialData().values()[0].correct;
+			if (last_trial_accuracy == true){
+				feedback_text = 'Correct';
+			}
+			return feedback_text;
+		},
+		choices: jsPsych.NO_KEYS,
+		trial_duration: 1000,
+	}
+	/* PROCEDURE */
+	var ax_button_procedure = {
+			timeline: [ax_button_trials, feedback],
+			timeline_variables: ax_stimuli,
+			randomize_order: true
+	}
+
+
+	// timeline
+	timeline = [];
+
+	//timeline.push(welcome_block);
+	timeline.push(instruction_block);
+	//timeline.push(orange_trial);
+
+
+	// Note that only the procedure variable is added to the overall experiment timeline, and not the stimuli variable or the trials variable.
+	timeline.push(ax_button_procedure);
+
+
+	// start experiment
+	jsPsych.init({
+		timeline: timeline,
+		preload_audio: audio,
+		on_finish: function(){
+			jsPsych.data.displayData('json')
+		}
+	})
+
+</script>
+</html>
