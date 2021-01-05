@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title> My Experiment </title>
+  <script src = "https://tyoon.net/webexp/jspsych/jspsych.js"></script>
+  <script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-html-button-response.js"></script>
+  <script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-instructions.js"></script>
+  <link href = "https://tyoon.net/webexp/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+</head>
+
+<body></body>
+<script>
+
+  // Welcome
+  var welcome_block = {
+    data: {
+      screen_id: "welcome"
+    },
+    type: "html-button-response",
+    stimulus: "Welcome to the experiment",
+    choices: ["Click here to continue"],
+  };
+
+  // Instructions
+  var instruction_block = {
+    data: {
+      screen_id: "instructions"
+    },
+    type: "instructions",
+    pages: [
+      "<p>In this experiment, a circle will appear in the middle of the screen.</p>" +
+      "<p>If the color of the circle is blue, press the left key.</p>" +
+      "<p>If the color of the circle is orange, press the right key.</p>",
+      "We will begin with some practice"
+      ],
+    show_clickable_nav: true,
+  };
+
+  // timeline
+  timeline = [];
+
+  timeline.push(welcome_block);
+  timeline.push(instruction_block);
+
+
+  // start experiment
+  jsPsych.init({
+    timeline: timeline,
+    on_finish: function(){
+      jsPsych.data.displayData('json')
+    }
+  })
+
+</script>
+</html>
