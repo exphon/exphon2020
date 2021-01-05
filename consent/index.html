@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>My experiment</title>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+			<script src = "https://tyoon.net/webexp/jspsych/jspsych.js"></script>
+			<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-external-html.js"></script>
+			<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-instructions.js"></script>
+			<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+			<script src = "https://tyoon.net/webexp/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+
+			<link href = "https://tyoon.net/webexp/jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+	// sample function that might be used to check if a subject has given
+	// consent to participate.
+	var check_consent = function(elem) {
+	  if (document.getElementById('consent_checkbox').checked) {
+	    return true;
+	  }
+	  else {
+	    alert("실험에 참가하기를 원한다면, '이 지각 실험에 참가하는 것에 동의합니다.'라고 적힌 문구 옆의 체크를 하기 바랍니다.");
+	    return false;
+	  }
+	  return false;
+	};
+
+
+	// declare the block.
+	var consent_form = {
+    data: { screen_id : 'consent' },
+	  type:'external-html',
+	  url: "external_page.html",
+	  cont_btn: "start",
+	  check_fn: check_consent
+	};
+
+	var timeline = [];
+	timeline.push(consent_form);
+
+  jsPsych.init({
+      timeline: timeline,
+			on_finish: function(){
+				jsPsych.data.displayData()
+			}
+  })
+  </script>
+</html>
