@@ -1,2 +1,7 @@
-# exphon2020
-Materials for Experimental Phonetics Workshop 
+# 실험음성학연구회 겨울워크숍 
+
+이 depository에 2021년 1월 25일부터 진행될 실험음성학연구회의 겨울워크숍 자료들을 올릴 예정입니다.
+
+아직은 아무 것도 없으니, 나중에 확인해 주기 바랍니다. 
+
+
