@@ -1,1 +1,262 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>AX Discrimination Test</title>
+  <script src="../jspsych-6.2.0/jspsych.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-html-keyboard-response.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-audio-keyboard-response.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-instructions.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-fullscreen.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-survey-text.js"></script>
+  <script src="../jspsych-6.2.0/plugins/jspsych-survey-multi-select.js"></script>
+  <link rel="stylesheet" href="../jspsych-6.2.0/css/jspsych.css" type="text/css">
+</head>
+
+<body></body>
+
+<script>
+
+  var audio = [
+    'sounds/aba1_aba2.wav',
+    'sounds/aba1_ava1.wav',
+    'sounds/ava1_aba1.wav',
+    'sounds/ava1_ava2.wav'
+  ];
+
+  var timeline = [];
+
+  var welcome_block = {
+    type: 'html-keyboard-response',
+    stimulus: '<h1>본 실험에 참가해 주셔서 감사합니다.</h1><h2>다음으로 넘어가려면 아무 키나 눌러 주기 바랍니다</h2>',
+    data: { 'screen_id': 'welcome_block'}
+  };
+  timeline.push(welcome_block)
+
+  timeline.push({
+    type: 'fullscreen',
+    message: "<p>전체 화면으로 전환하겠습니다.</p>",
+    button_label: "계속",
+    fullscreen_mode: true
+  });
+
+
+  var participantID = {
+            type: 'survey-text',
+            questions: [
+              {prompt: "성명을 기입하세요", rows: 1, columns: 40, placeholder: "이름", name: 'Name'},
+              {prompt: "학번을 기입하세요", rows: 1, columns: 40, placeholder: "학번", name: "StudentNumber"}
+            ],
+            on_finish: function(data){
+              //console.log("RESPONSES:", data.responses);
+              //console.log(JSON.parse(data.responses).Name);
+              var subjectName = JSON.parse(data.responses).Q0.trim();
+              var subjectID = JSON.parse(data.responses).Q1.trim();
+              console.log(subjectName, subjectID);
+              jsPsych.data.addProperties({subjectName: subjectName, subjectID: subjectID});
+
+            }
+            };
+
+            timeline.push(participantID);
+
+            var demographic_info1 = {
+              type: 'survey-multi-select',
+              preamble: '<h2>사전 조사를 잠시 하겠습니다.</h2>',
+              questions: [ {
+                prompt: '<h3>성별을 선택하세요.</h3>',
+                options: ['남성', '여성'],
+                horizontal: true,
+                required: true,
+                name: 'gender'
+              },
+              {
+                prompt: '영어 구사 수준을 선택하세요',
+                options: ['상', '중', '하'],
+                horizontal: true,
+                required: false,
+                name: 'English'
+              }
+            ],
+            on_finish: function(data) {
+              var gender = JSON.parse(data.responses).Q0[0];
+              var english = JSON.parse(data.responses).Q1[0];
+              console.log(gender, english);
+              jsPsych.data.addProperties({gender: gender, english: english});
+              }
+            }
+
+            timeline.push(demographic_info1);
+
+
+
+
+
+  var instruction_block = {
+    type: 'instructions',
+    pages: [
+        '<p>본 실험에서는 두 소리를 연이어서 듣게 될 것입니다.</p>'+
+        '<p>두번째 들리는 소리가 첫번째 들리는 소리와 같으면, <strong>s</strong>를 눌러 주기 바랍니다.</p>' +
+        '<p>두번째 들리는 소리가 첫번쨰 들리는 소리와 다르면, <strong>d</strong>를 눌러 주기 바랍니다.</p>',
+        '준비가 되었으면 다음 키를 눌러주세요'
+    ],
+    show_clickable_nav: true,
+    button_label_previous: '이전',
+    button_label_next: '이후',
+    page_label: '페이지',
+    data: {'screen_id': 'instruction_block'}
+  }
+
+  timeline.push(instruction_block);
+
+  var test_stimuli = [
+    {stimulus: 'sounds/aba1_aba2.wav', data: {exp_part: 'practice', correct_response: 's', screen_id: 'practice'}},
+    {stimulus: 'sounds/aba1_ava1.wav', data: {exp_part: 'practice', correct_response: 'd', screen_id: 'practice'}},
+    {stimulus: 'sounds/ava1_aba1.wav', data: {exp_part: 'practice', correct_response: 'd', screen_id: 'practice'}},
+    {stimulus: 'sounds/ava1_ava2.wav', data: {exp_part: 'practice', correct_response: 's', screen_id: 'practice'}}
+  ];
+
+  var fixation = {
+    type: 'html-keyboard-response',
+    stimulus: '<div style="font-size:60px;">+</div>',
+    choices: jsPsych.NO_KEYS,
+    trial_duration: 1000
+  }
+
+  var test = {
+    type: 'audio-keyboard-response',
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    prompt: '<div style="font-size:60px;">s나 d를 눌러주세요!</div>',
+    choices: ['s', 'd'],
+    data: jsPsych.timelineVariable('data'),
+    on_finish: function(data){
+      //console.log('DATA:', data);
+      if (data.key_press == '83' && data.correct_response == 's') {
+        //console.log('CORRECT!');
+        data.accuracy = '정답입니다!'
+      } else if (data.key_press == '68' && data.correct_response == 'd'){
+        //console.log('CORRECT!');
+        data.accuracy = '정답입니다!'
+      } else {
+        //console.log('INCORRECT!');
+        data.accuracy = '오답입니다!'
+      }
+    }
+  }
+
+  var feedback = {
+    type: 'html-keyboard-response',
+    data: { screen_id: "feedback"},
+    stimulus: function(){
+      var last_trial_correct = jsPsych.data.get().last(1).values()[0].accuracy;
+      console.log('LAST_TRIAL_CORRECT:', jsPsych.data.get().last(1).values());
+      return '<div style="font-size:60px;">'+last_trial_correct+'</div>'
+    },
+    choices: jsPsych.NO_KEYS,
+    trial_duration: 1000,
+  }
+
+  var test_procedure = {
+    timeline: [fixation, test, feedback],
+    timeline_variables: test_stimuli,
+    randomize_order: true
+    //repetitions: 2
+  }
+
+  timeline.push(test_procedure);
+
+  // break timeout
+
+    var breaktime = {
+    type: 'html-keyboard-response',
+    stimulus: '잠시 쉬도록 하겠습니다. 계속하려면 아무키나 누르세요.',
+    on_finish: function(){
+        jsPsych.pauseExperiment();
+        setTimeout(jsPsych.resumeExperiment, 500);
+    }
+  }
+
+  timeline.push(breaktime);
+
+  var exp1_stimuli = [
+    {stimulus: 'sounds/aba1_aba2.wav', data: {exp_part: 'exp1block', correct_response: 's', screen_id: 'exp1'}},
+    {stimulus: 'sounds/aba1_ava1.wav', data: {exp_part: 'exp1block', correct_response: 'd', screen_id: 'exp1'}},
+    {stimulus: 'sounds/ava1_aba1.wav', data: {exp_part: 'exp1block', correct_response: 'd', screen_id: 'exp1'}},
+    {stimulus: 'sounds/ava1_ava2.wav', data: {exp_part: 'exp1block', correct_response: 's', screen_id: 'exp1'}}
+  ];
+
+  var fixation = {
+    type: 'html-keyboard-response',
+    stimulus: '<div style="font-size:60px;">+</div>',
+    choices: jsPsych.NO_KEYS,
+    trial_duration: 1000
+  }
+
+  var exp1 = {
+    type: 'audio-keyboard-response',
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    prompt: '<div style="font-size:60px;">s나 d를 눌러주세요!</div>',
+    choices: ['s', 'd'],
+    data: jsPsych.timelineVariable('data'),
+    on_finish: function(data){
+      //console.log('DATA:', data);
+      if (data.key_press == '83' && data.correct_response == 's') {
+        //console.log('CORRECT!');
+        data.accuracy = '정답입니다!'
+      } else if (data.key_press == '68' && data.correct_response == 'd'){
+        //console.log('CORRECT!');
+        data.accuracy = '정답입니다!'
+      } else {
+        //console.log('INCORRECT!');
+        data.accuracy = '오답입니다!'
+      }
+    }
+  }
+
+
+
+  var exp1_procedure = {
+    timeline: [fixation, exp1],
+    timeline_variables: exp1_stimuli,
+    randomize_order: true,
+    repetitions: 1
+  }
+
+  timeline.push(exp1_procedure);
+
+  var debriefing = {
+    data: {screen_id: 'debriefing'},
+    type: "html-keyboard-response",
+    stimulus: function(){
+      var trials = jsPsych.data.get().filter({exp_part: "exp1block"});
+      var correct_trials = trials.filter({accuracy: "정답입니다!"});
+      var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+
+      return "<p>"+accuracy+"%만큼 정확하게 대답했습니다.</p>" +
+             "<p>실험에 참가해 주셔서 감사합니다. 끝내려면 아무 키나 눌러주기 바랍니다.</p>"
+    }
+  }
+
+  timeline.push(debriefing);
+
+  timeline.push({
+    type: 'fullscreen',
+    button_label: "계속",
+    fullscreen_mode: false
+  });
+
+  jsPsych.init({
+    timeline: timeline,
+    preload_audio: audio,
+    on_finish: function(){
+      jsPsych.data.displayData();
+      jsPsych.data.get().localSave('csv', 'axdisc.csv');
+
+    }
+  })
+</script>
+
+</html>
