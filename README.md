@@ -17,7 +17,8 @@
 <a href="https://forms.gle/56myyUorFqSXfQWe6">https://forms.gle/56myyUorFqSXfQWe6</a> </p><br />
 
 
-1. YouTube PlayList link https://www.youtube.com/playlist?list=PLRRjsh6AOdM2Fas-ggGL4fnHUp6oD0R-6
+YouTube PlayList link https://www.youtube.com/playlist?list=PLRRjsh6AOdM2Fas-ggGL4fnHUp6oD0R-6
+
 
 
 
