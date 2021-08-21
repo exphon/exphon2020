@@ -13,7 +13,7 @@
 
 - 사전 신청 등록을 위한 구글폼: (1월 20일 현재 105명 접수)
 
-<a href="https://forms.gle/56myyUorFqSXfQWe6">https://forms.gle/56myyUorFqSXfQWe6</a> </p><br />
+~~<a href="#">https://forms.gle/56myyUorFqSXfQWe6</a> </p><br />~~
 
 
 - YouTube PlayList link (12개의 YouTube 영상 자료, 약 8시간 20분)
