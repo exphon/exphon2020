@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
+    <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body></body>
+  <script>
+
+    var audio = [
+        'sounds/aba1_aba2.wav',
+        'sounds/aba1_ava1.wav',
+        'sounds/ava1_aba1.wav',
+        'sounds/ava1_ava2.wav'
+    ];
+
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    /* create timeline */
+    var timeline = [];
+
+    var welcome_block = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<h1>본 실험에 참가해 주셔서 감사합니다.</h1><h2>다음으로 넘어가려면 아무 키나 눌러 주기 바랍니다</h2>',
+        data: { 'screen_id': 'welcome_block'}
+    };
+
+    timeline.push(welcome_block)
+
+    /* start the experiment */
+    jsPsych.run(timeline);
+
+ </script>
+
+</html>
