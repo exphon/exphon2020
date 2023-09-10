@@ -147,10 +147,10 @@
         data: jsPsych.timelineVariable('data'),
         on_finish: function(data){
         //console.log('DATA:', data);
-        if (data.key_press == '83' && data.correct_response == 's') {
+        if (data.response == 's' && data.correct_response == 's') {
             //console.log('CORRECT!');
             data.accuracy = '정답입니다!'
-        } else if (data.key_press == '68' && data.correct_response == 'd'){
+        } else if (data.response == 'd' && data.correct_response == 'd'){
             //console.log('CORRECT!');
             data.accuracy = '정답입니다!'
         } else {
